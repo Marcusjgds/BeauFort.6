@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} — {{ site_name }}{% endblock %}
+{% block style %}
+<style>
+.ph{padding:4rem 2rem 2rem;text-align:center;border-bottom:1px solid var(--ln);background:var(--s1);}
+.pi{font-size:3rem;margin-bottom:1rem;display:block;animation:float 3s ease-in-out infinite;}
+.pt{font-family:'DM Serif Display',serif;font-size:2.5rem;letter-spacing:-1px;}
+.pc2{max-width:800px;margin:3rem auto;padding:0 2rem;}
+.pc2 h2{font-family:'DM Serif Display',serif;font-size:1.6rem;margin:2rem 0 1rem;}
+.pc2 h3{font-size:1.1rem;font-weight:600;margin:1.5rem 0 .75rem;}
+.pc2 p{color:var(--t2);line-height:1.8;margin-bottom:1rem;}
+.pc2 a{color:var(--ac);}
+.pc2 ul{color:var(--t2);padding-left:1.5rem;margin-bottom:1rem;line-height:1.8;}
+.pc2 img{max-width:100%;border-radius:12px;margin:1rem 0;}
+.dsbtn{display:inline-flex;align-items:center;gap:10px;background:#5865f2;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:1rem;transition:all 0.2s;margin-top:1rem;}
+.dsbtn:hover{background:#4752c4;transform:translateY(-2px);}
+</style>
+{% endblock %}
+{% block content %}
+<div class="ph"><span class="pi au">{{ page.icon }}</span><h1 class="pt au1">{{ page.title }}</h1></div>
+<div class="pc2 au2">
+  {{ page.content|safe }}
+  {% if page.slug=='discord' and discord_url %}
+    <a href="{{ discord_url }}" class="dsbtn" target="_blank">💬 Rejoindre le Discord</a>
+  {% endif %}
+</div>
+{% endblock %}

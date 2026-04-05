@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Connexion — {{ site_name }}{% endblock %}
+{% block style %}
+<style>
+.lw{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.lc{background:var(--s1);border:1px solid var(--ln);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;}
+.lt{text-align:center;margin-bottom:2rem;}
+.lt img{width:64px;height:64px;border-radius:12px;object-fit:cover;margin-bottom:1rem;}
+.lt h1{font-family:'DM Serif Display',serif;font-size:1.5rem;}
+.lt p{color:var(--t2);font-size:0.85rem;margin-top:.4rem;}
+label{display:block;font-size:0.72rem;font-weight:500;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+input{width:100%;background:var(--s2);border:1px solid var(--ln2);border-radius:8px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:0.92rem;padding:11px 14px;outline:none;margin-bottom:1rem;}
+input:focus{border-color:var(--ac);}
+.err{background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:10px 14px;color:var(--rd);font-size:0.82rem;margin-bottom:1rem;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="lw">
+  <div class="lc au">
+    <div class="lt">
+      {% if site_logo %}<img src="/uploads/logos/{{ site_logo }}">{% else %}<img src="/static/logo.png">{% endif %}
+      <h1>Connexion</h1><p>Entre tes identifiants</p>
+    </div>
+    {% if error %}<div class="err">{{ error }}</div>{% endif %}
+    <form method="POST" action="/login">
+      <label>Pseudo</label><input type="text" name="username" placeholder="Ton pseudo" required autofocus>
+      <label>Mot de passe</label><input type="password" name="password" placeholder="••••••••" required>
+      <button type="submit" class="btn btn-ac" style="width:100%;justify-content:center;padding:12px;">Se connecter</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

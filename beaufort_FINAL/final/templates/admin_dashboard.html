@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Admin — {{ site_name }}{% endblock %}
+{% block style %}
+<style>
+.aw{max-width:1100px;margin:0 auto;padding:2rem;}
+.ah{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;}
+.at{font-family:'DM Serif Display',serif;font-size:1.8rem;}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.sc{background:var(--s1);border:1px solid var(--ln);border-radius:12px;padding:1.2rem;}
+.scn{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--t1);}
+.scl{font-size:0.75rem;color:var(--t2);margin-top:3px;text-transform:uppercase;letter-spacing:.5px;}
+.live{color:#34d399;}.maint{color:#f59e0b;}.closed{color:#f87171;}
+.sec{background:var(--s1);border:1px solid var(--ln);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+.sh{padding:1rem 1.25rem;border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between;}
+.st{font-weight:600;font-size:0.88rem;}
+.sb2{padding:1.25rem;}
+.sr{display:flex;align-items:flex-start;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--ln);gap:1rem;}
+.sr:last-child{border-bottom:none;}
+.sl{font-weight:600;font-size:0.88rem;margin-bottom:3px;}
+.ss{font-size:0.78rem;color:var(--t2);}
+.si{width:100%;background:var(--s2);border:1px solid var(--ln2);border-radius:8px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:0.88rem;padding:8px 12px;outline:none;margin-top:6px;}
+.si:focus{border-color:var(--ac);}
+.tog{position:relative;width:44px;height:24px;flex-shrink:0;margin-top:4px;}
+.tog input{opacity:0;width:0;height:0;}
+.tsl{position:absolute;inset:0;background:var(--s3);border:1px solid var(--ln2);border-radius:999px;cursor:pointer;transition:0.2s;}
+.tsl::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--t2);border-radius:50%;transition:0.2s;}
+.tog input:checked+.tsl{background:var(--acd);border-color:var(--ac);}
+.tog input:checked+.tsl::before{transform:translateX(20px);background:var(--ac);}
+.ar{display:flex;gap:8px;margin-bottom:1rem;}
+.ar input{flex:1;background:var(--s2);border:1px solid var(--ln2);border-radius:8px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:0.88rem;padding:8px 12px;outline:none;}
+.ar input:focus{border-color:var(--ac);}
+.item{display:flex;align-items:center;justify-content:space-between;background:var(--s2);border:1px solid var(--ln);border-radius:8px;padding:10px 14px;margin-bottom:6px;}
+.in{font-weight:600;font-size:0.88rem;}
+.is{font-size:0.72rem;color:var(--t2);margin-top:2px;}
+.pi{background:var(--s2);border:1px solid var(--ln);border-radius:10px;padding:1rem;margin-bottom:.75rem;}
+.pih{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.pf2{display:grid;grid-template-columns:60px 1fr;gap:.5rem;margin-bottom:.75rem;}
+.pf2 input{background:var(--s1);border:1px solid var(--ln2);border-radius:6px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:7px 10px;outline:none;width:100%;}
+.pf2 input:focus{border-color:var(--ac);}
+.pta{width:100%;background:var(--s1);border:1px solid var(--ln2);border-radius:6px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:8px 10px;outline:none;resize:vertical;min-height:80px;}
+.pta:focus{border-color:var(--ac);}
+.es{text-align:center;padding:2rem;color:var(--t2);font-size:0.85rem;}
+@media(max-width:700px){.sg{grid-template-columns:1fr 1fr}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="aw">
+  <div class="ah au">
+    <div class="at">Dashboard Admin</div>
+    <a href="/" class="btn btn-ol btn-sm">← Voir le site</a>
+  </div>
+  <div class="sg au1">
+    <div class="sc"><div class="scn">{{ db_models|length }}</div><div class="scl">Modeles</div></div>
+    <div class="sc"><div class="scn">{{ db_users|length }}</div><div class="scl">Utilisateurs</div></div>
+    <div class="sc"><div class="scn">{{ db_pages|length }}</div><div class="scl">Pages</div></div>
+    <div class="sc">
+      <div class="scn {% if settings.site_closed=='1' %}closed{% elif settings.maintenance=='1' %}maint{% else %}live{% endif %}">
+        {% if settings.site_closed=='1' %}Ferme{% elif settings.maintenance=='1' %}Maint.{% else %}Live{% endif %}
+      </div>
+      <div class="scl">Etat</div>
+    </div>
+  </div>
+
+  <!-- PARAMETRES -->
+  <div class="sec au1">
+    <div class="sh"><span class="st">⚙️ Parametres generaux</span><button class="btn btn-ac btn-sm" onclick="saveSettings()">Sauvegarder</button></div>
+    <div class="sb2">
+      <div class="sr"><div style="flex:1"><div class="sl">Nom du site</div><input class="si" id="s-name" value="{{ settings.site_name }}"></div></div>
+      <div class="sr"><div style="flex:1"><div class="sl">Titre hero</div><input class="si" id="s-htitle" value="{{ settings.hero_title }}"></div></div>
+      <div class="sr"><div style="flex:1"><div class="sl">Sous-titre hero</div><input class="si" id="s-hsub" value="{{ settings.hero_subtitle }}"></div></div>
+      <div class="sr"><div style="flex:1"><div class="sl">Lien Discord</div><input class="si" id="s-discord" value="{{ settings.discord_url }}" placeholder="https://discord.gg/..."></div></div>
+      <div class="sr">
+        <div><div class="sl">🔧 Mode maintenance</div><div class="ss">Les visiteurs voient une page maintenance</div><input class="si" id="s-mmsg" value="{{ settings.maintenance_msg }}"></div>
+        <label class="tog"><input type="checkbox" id="t-maint" {% if settings.maintenance=='1' %}checked{% endif %}><span class="tsl"></span></label>
+      </div>
+      <div class="sr">
+        <div><div class="sl">🔒 Site ferme</div><div class="ss">Personne ne peut acceder (sauf admin)</div><input class="si" id="s-cmsg" value="{{ settings.site_closed_msg }}"></div>
+        <label class="tog"><input type="checkbox" id="t-closed" {% if settings.site_closed=='1' %}checked{% endif %}><span class="tsl"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- THEME -->
+  <div class="sec au2">
+    <div class="sh"><span class="st">🎨 Theme global (tout le monde le voit)</span></div>
+    <div class="sb2" style="display:flex;gap:.75rem;flex-wrap:wrap;">
+      {% for th,label,emoji in [('dark','Sombre','🌙'),('light','Clair','☀️'),('noel','Noel','🎄'),('halloween','Halloween','🎃'),('paques','Paques','🐣')] %}
+      <button class="btn {% if settings.site_theme==th %}btn-ac{% else %}btn-ol{% endif %}" onclick="applyGlobalTheme('{{ th }}',this)">{{ emoji }} {{ label }}</button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- LOGO -->
+  <div class="sec au2">
+    <div class="sh"><span class="st">🖼️ Logo du site</span></div>
+    <div class="sb2" style="display:flex;align-items:center;gap:1rem;">
+      {% if site_logo %}<img src="/uploads/logos/{{ site_logo }}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--ln2);">
+      {% else %}<img src="/static/logo.png" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--ln2);">{% endif %}
+      <div>
+        <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="uploadLogo()">
+        <button class="btn btn-ac btn-sm" onclick="document.getElementById('logo-file').click()">Changer le logo</button>
+        <div style="font-size:0.75rem;color:var(--t2);margin-top:5px;">PNG, JPG ou SVG</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGES -->
+  <div class="sec au2">
+    <div class="sh"><span class="st">📄 Pages du site</span><button class="btn btn-ac btn-sm" onclick="addPage()">+ Nouvelle page</button></div>
+    <div class="sb2" id="pages-list">
+      {% if db_pages %}
+        {% for p in db_pages %}
+        <div class="pi" id="page-{{ p.id }}">
+          <div class="pih">
+            <span style="font-weight:600;font-size:0.88rem;">{{ p.icon }} {{ p.title }}</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <label class="tog"><input type="checkbox" {% if p.visible %}checked{% endif %} onchange="togglePage({{ p.id }},this.checked)"><span class="tsl"></span></label>
+              <button class="btn btn-rd btn-sm" onclick="deletePage({{ p.id }})">Supprimer</button>
+            </div>
+          </div>
+          <div class="pf2">
+            <input value="{{ p.icon }}" placeholder="Emoji" id="pi-{{ p.id }}">
+            <input value="{{ p.title }}" placeholder="Titre" id="pt-{{ p.id }}">
+          </div>
+          <textarea class="pta" id="pc-{{ p.id }}" placeholder="Contenu HTML...">{{ p.content }}</textarea>
+          <button class="btn btn-ac btn-sm" style="margin-top:.5rem" onclick="savePage({{ p.id }})">Sauvegarder</button>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="es">Aucune page.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- UTILISATEURS -->
+  <div class="sec au3">
+    <div class="sh"><span class="st">👥 Utilisateurs</span><span style="font-size:0.78rem;color:var(--t2)">{{ db_users|length }} utilisateur(s)</span></div>
+    <div class="sb2">
+      <div class="ar">
+        <input id="u-name" placeholder="Pseudo...">
+        <input id="u-pass" placeholder="Mot de passe..." type="password">
+        <button class="btn btn-ac" onclick="addUser()">+ Ajouter</button>
+      </div>
+      <div id="users-list">
+        {% if db_users %}
+          {% for u in db_users %}
+          <div class="item" id="u-{{ u.id }}">
+            <div><div class="in">{{ u.username }}</div><div class="is">Ajoute le {{ u.created_at[:10] }}</div></div>
+            <button class="btn btn-rd btn-sm" onclick="removeUser({{ u.id }})">Retirer</button>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="es" id="ue">Aucun utilisateur.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- MODELES -->
+  <div class="sec au3">
+    <div class="sh"><span class="st">📦 Modeles publies</span><span style="font-size:0.78rem;color:var(--t2)">{{ db_models|length }} modele(s)</span></div>
+    <div class="sb2">
+      {% if db_models %}
+        {% for m in db_models %}
+        <div class="item" id="m-{{ m.id }}">
+          <div><div class="in">{{ m.name }}</div><div class="is">par {{ m.author }} · {{ m.category }} · {{ m.downloads }} telechargements</div></div>
+          <button class="btn btn-rd btn-sm" onclick="deleteModel({{ m.id }})">Supprimer</button>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="es">Aucun modele.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+async function saveSettings(){
+  const data={
+    site_name:document.getElementById('s-name').value,
+    hero_title:document.getElementById('s-htitle').value,
+    hero_subtitle:document.getElementById('s-hsub').value,
+    discord_url:document.getElementById('s-discord').value,
+    maintenance:document.getElementById('t-maint').checked?'1':'0',
+    site_closed:document.getElementById('t-closed').checked?'1':'0',
+    maintenance_msg:document.getElementById('s-mmsg').value,
+    site_closed_msg:document.getElementById('s-cmsg').value,
+  };
+  const r=await fetch('/admin/save_settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d=await r.json();
+  if(d.success)toast('Parametres sauvegardes !');else toast('Erreur');
+}
+async function applyGlobalTheme(t,btn){
+  await fetch('/admin/save_settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({site_theme:t})});
+  applyTheme(t);
+  document.querySelectorAll('.sec:nth-child(3) .btn').forEach(b=>{b.className=b.className.replace('btn-ac','btn-ol');});
+  btn.className=btn.className.replace('btn-ol','btn-ac');
+  toast('Theme applique pour tout le monde !');
+}
+async function uploadLogo(){
+  const lf=document.getElementById('logo-file').files[0];
+  if(!lf)return;
+  const fd=new FormData();fd.append('logo',lf);
+  const r=await fetch('/upload_logo',{method:'POST',body:fd});
+  const d=await r.json();
+  if(d.success){toast('Logo mis a jour !');setTimeout(()=>location.reload(),1000);}
+}
+async function addUser(){
+  const un=document.getElementById('u-name').value.trim();
+  const pw=document.getElementById('u-pass').value.trim();
+  if(!un||!pw){toast('Pseudo et mot de passe requis');return;}
+  const fd=new FormData();fd.append('username',un);fd.append('password',pw);
+  const r=await fetch('/admin/add_user',{method:'POST',body:fd});
+  const d=await r.json();
+  if(d.success){
+    document.getElementById('u-name').value='';document.getElementById('u-pass').value='';
+    const ue=document.getElementById('ue');if(ue)ue.remove();
+    const div=document.createElement('div');div.className='item';div.id='u-new';
+    div.innerHTML=`<div><div class="in">${un}</div><div class="is">Vient d'etre ajoute</div></div><button class="btn btn-rd btn-sm" onclick="removeUser(0)">Retirer</button>`;
+    document.getElementById('users-list').prepend(div);
+    toast(un+' ajoute !');
+  } else toast(d.error||'Erreur');
+}
+async function removeUser(id){
+  if(!confirm('Supprimer cet utilisateur ?'))return;
+  await fetch('/admin/remove_user/'+id,{method:'POST'});
+  document.getElementById('u-'+id)?.remove();
+  toast('Utilisateur retire');
+}
+async function deleteModel(id){
+  if(!confirm('Supprimer ce modele ?'))return;
+  await fetch('/admin/delete_model/'+id,{method:'POST'});
+  document.getElementById('m-'+id)?.remove();
+  toast('Modele supprime');
+}
+async function savePage(id){
+  const data={id,title:document.getElementById('pt-'+id).value,icon:document.getElementById('pi-'+id).value,content:document.getElementById('pc-'+id).value,visible:1};
+  const r=await fetch('/admin/save_page',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d=await r.json();
+  if(d.success)toast('Page sauvegardee !');
+}
+async function togglePage(id,v){
+  const data={id,visible:v?1:0,title:document.getElementById('pt-'+id).value,icon:document.getElementById('pi-'+id).value,content:document.getElementById('pc-'+id).value};
+  await fetch('/admin/save_page',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  toast(v?'Page visible':'Page masquee');
+}
+async function deletePage(id){
+  if(!confirm('Supprimer cette page ?'))return;
+  await fetch('/admin/delete_page/'+id,{method:'POST'});
+  document.getElementById('page-'+id)?.remove();
+  toast('Page supprimee');
+}
+function addPage(){
+  const div=document.createElement('div');div.className='pi';div.id='page-new';
+  div.innerHTML=`<div class="pih"><span style="font-weight:600">Nouvelle page</span></div><div class="pf2"><input value="📄" id="pi-new"><input placeholder="Titre" id="pt-new"></div><textarea class="pta" id="pc-new" placeholder="Contenu HTML..."></textarea><button class="btn btn-ac btn-sm" style="margin-top:.5rem" onclick="saveNewPage()">Creer</button>`;
+  document.getElementById('pages-list').prepend(div);
+}
+async function saveNewPage(){
+  const data={title:document.getElementById('pt-new').value,icon:document.getElementById('pi-new').value,content:document.getElementById('pc-new').value,visible:1};
+  if(!data.title){toast('Titre requis');return;}
+  const r=await fetch('/admin/save_page',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d=await r.json();
+  if(d.success){toast('Page creee !');setTimeout(()=>location.reload(),1000);}
+}
+</script>
+{% endblock %}

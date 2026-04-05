@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="{{ site_theme }}">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ site_name }}{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-theme="dark"]{--bg:#080809;--s1:#0f0f11;--s2:#161618;--s3:#1d1d20;--ln:rgba(255,255,255,0.06);--ln2:rgba(255,255,255,0.10);--t1:#f2f2f4;--t2:#8888a0;--t3:#444455;--ac:#c9a96e;--ac2:#e8d5a3;--acd:rgba(201,169,110,0.10);--gr:#34d399;--grd:rgba(52,211,153,0.10);--am:#f59e0b;--amd:rgba(245,158,11,0.10);--rd:#f87171;}
+[data-theme="light"]{--bg:#f5f5f7;--s1:#ffffff;--s2:#f0f0f3;--s3:#e5e5ea;--ln:rgba(0,0,0,0.07);--ln2:rgba(0,0,0,0.12);--t1:#0f0f11;--t2:#6b6b80;--t3:#b0b0c0;--ac:#2563eb;--ac2:#1d4ed8;--acd:rgba(37,99,235,0.10);--gr:#16a34a;--grd:rgba(22,163,74,0.10);--am:#d97706;--amd:rgba(217,119,6,0.10);--rd:#dc2626;}
+[data-theme="noel"]{--bg:#060e06;--s1:#0a140a;--s2:#0f1c0f;--s3:#142414;--ln:rgba(255,255,255,0.06);--ln2:rgba(255,100,100,0.15);--t1:#f0f8f0;--t2:#88b088;--t3:#4a6a4a;--ac:#ff4444;--ac2:#ff7777;--acd:rgba(255,68,68,0.10);--gr:#4ade80;--grd:rgba(74,222,128,0.10);--am:#ffd700;--amd:rgba(255,215,0,0.10);--rd:#ff6666;}
+[data-theme="halloween"]{--bg:#080005;--s1:#0e000a;--s2:#160010;--s3:#1e0018;--ln:rgba(255,140,0,0.10);--ln2:rgba(255,140,0,0.20);--t1:#f0e0f0;--t2:#a080a0;--t3:#604060;--ac:#ff8c00;--ac2:#ffaa33;--acd:rgba(255,140,0,0.10);--gr:#a0ff60;--grd:rgba(160,255,96,0.10);--am:#ff8c00;--amd:rgba(255,140,0,0.10);--rd:#ff3060;}
+[data-theme="paques"]{--bg:#0d0818;--s1:#130e22;--s2:#19122e;--s3:#20163a;--ln:rgba(192,132,252,0.10);--ln2:rgba(192,132,252,0.18);--t1:#f0e8ff;--t2:#9070c0;--t3:#5a3a8a;--ac:#c084fc;--ac2:#d8a4ff;--acd:rgba(192,132,252,0.10);--gr:#4ade80;--grd:rgba(74,222,128,0.10);--am:#f59e0b;--amd:rgba(245,158,11,0.10);--rd:#f43f5e;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;min-height:100vh;transition:background 0.4s,color 0.4s;}
+.sb{display:none;text-align:center;padding:8px;font-size:0.82rem;font-weight:500;}
+[data-theme="noel"] .sb{display:block;background:#061006;color:#ff4444;border-bottom:1px solid rgba(255,68,68,0.15);}
+[data-theme="halloween"] .sb{display:block;background:#0a0006;color:#ff8c00;border-bottom:1px solid rgba(255,140,0,0.15);}
+[data-theme="paques"] .sb{display:block;background:#0d0820;color:#c084fc;border-bottom:1px solid rgba(192,132,252,0.15);}
+nav{position:sticky;top:0;z-index:200;padding:0 2rem;background:rgba(8,8,9,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--ln);}
+[data-theme="light"] nav{background:rgba(245,245,247,0.92);}
+.nav-in{max-width:1200px;margin:0 auto;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.brand-logo{width:34px;height:34px;border-radius:8px;object-fit:cover;border:1px solid var(--ln2);}
+.brand-name{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--t1);}
+.nav-links{display:flex;align-items:center;gap:2px;}
+.nav-link{padding:6px 12px;border-radius:8px;font-size:0.84rem;color:var(--t2);text-decoration:none;transition:all 0.15s;white-space:nowrap;}
+.nav-link:hover{color:var(--t1);background:var(--s2);}
+.nav-link.active{color:var(--ac);background:var(--acd);}
+.nav-end{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.ts{display:flex;background:var(--s2);border:1px solid var(--ln);border-radius:999px;padding:3px;gap:2px;}
+.ts-b{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:var(--t2);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.ts-b:hover{background:var(--ln2);}
+.ts-b.on{background:var(--acd);color:var(--ac);}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.88rem;border:none;border-radius:8px;cursor:pointer;padding:8px 16px;transition:all 0.2s;text-decoration:none;white-space:nowrap;}
+.btn-ac{background:var(--ac);color:#0f0d08;}
+.btn-ac:hover{background:var(--ac2);transform:translateY(-1px);}
+.btn-ol{background:transparent;color:var(--t2);border:1px solid var(--ln2);}
+.btn-ol:hover{color:var(--t1);background:var(--s2);}
+.btn-sm{padding:6px 12px;font-size:0.82rem;}
+.btn-rd{background:rgba(248,113,113,0.08);color:var(--rd);border:1px solid rgba(248,113,113,0.2);}
+.btn-rd:hover{background:rgba(248,113,113,0.14);}
+.upill{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--ln2);border-radius:999px;padding:4px 12px 4px 4px;}
+.uav{width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#0f0d08;}
+.uname{font-size:0.84rem;font-weight:500;}
+.adm-badge{background:var(--acd);color:var(--ac);font-size:0.64rem;font-weight:700;border-radius:999px;padding:2px 7px;letter-spacing:0.5px;text-transform:uppercase;}
+.wrap{max-width:1200px;margin:0 auto;padding:3rem 2rem;}
+footer{border-top:1px solid var(--ln);padding:2rem;margin-top:4rem;}
+.foot-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.foot-brand{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--t2);}
+.foot-links{display:flex;gap:1.5rem;}
+.foot-links a{color:var(--t3);text-decoration:none;font-size:0.78rem;}
+.foot-links a:hover{color:var(--ac);}
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--s1);color:var(--t1);border:1px solid var(--ln2);border-radius:12px;padding:11px 18px;font-size:0.83rem;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:translateY(80px);opacity:0;transition:all 0.25s;z-index:999;pointer-events:none;}
+#toast.show{transform:translateY(0);opacity:1;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.au{animation:fadeUp 0.5s ease both;}
+.au1{animation:fadeUp 0.5s 0.1s ease both;}
+.au2{animation:fadeUp 0.5s 0.2s ease both;}
+.au3{animation:fadeUp 0.5s 0.3s ease both;}
+@media(max-width:860px){nav,.wrap,footer{padding-left:1rem;padding-right:1rem}.nav-links{display:none}}
+</style>
+{% block style %}{% endblock %}
+</head>
+<body>
+<div class="sb" id="sb"></div>
+<nav>
+  <div class="nav-in">
+    <a href="/" class="brand">
+      {% if site_logo %}<img src="/uploads/logos/{{ site_logo }}" class="brand-logo" alt="Logo">
+      {% else %}<img src="/static/logo.png" class="brand-logo" alt="Logo">{% endif %}
+      <span class="brand-name">{{ site_name }}</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link {% if request.path=='/' %}active{% endif %}">🏠 Accueil</a>
+      {% for p in nav_pages %}
+      <a href="/page/{{ p.slug }}" class="nav-link {% if request.path=='/page/'+p.slug %}active{% endif %}">{{ p.icon }} {{ p.title }}</a>
+      {% endfor %}
+    </div>
+    <div class="nav-end">
+      <div class="ts" id="ts">
+        <button class="ts-b" onclick="setTheme('dark')" title="Sombre">🌙</button>
+        <button class="ts-b" onclick="setTheme('light')" title="Clair">☀️</button>
+        <button class="ts-b" onclick="setTheme('system')" title="Systeme">⚙️</button>
+        {% if is_admin %}
+        <button class="ts-b" onclick="setTheme('noel')" title="Noel">🎄</button>
+        <button class="ts-b" onclick="setTheme('halloween')" title="Halloween">🎃</button>
+        <button class="ts-b" onclick="setTheme('paques')" title="Paques">🐣</button>
+        {% endif %}
+      </div>
+      {% if logged_in %}
+        {% if is_admin %}<span class="adm-badge">Admin</span>{% endif %}
+        <div class="upill">
+          <div class="uav">{{ username[0]|upper }}</div>
+          <span class="uname">{{ username }}</span>
+        </div>
+        {% if is_admin %}<a href="/admin/dashboard" class="btn btn-ol btn-sm">Dashboard</a>{% endif %}
+        <a href="/logout" class="btn btn-ol btn-sm">Quitter</a>
+      {% else %}
+        <a href="/login" class="btn btn-ac btn-sm">Connexion</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+{% block content %}{% endblock %}
+<footer>
+  <div class="foot-in">
+    <span class="foot-brand">{{ site_name }}</span>
+    <div class="foot-links">
+      <a href="/">Accueil</a>
+      {% for p in nav_pages %}<a href="/page/{{ p.slug }}">{{ p.title }}</a>{% endfor %}
+      <a href="/privacy">Confidentialite</a>
+      <a href="/terms">Conditions</a>
+    </div>
+  </div>
+</footer>
+<div id="toast"></div>
+<script>
+const BANNERS={noel:'🎄 Joyeux Noel a toute la communaute !',halloween:'🎃 Bonne Halloween !',paques:'🐣 Joyeuses Paques !'};
+function applyTheme(t){
+  let r=t==='system'?(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):t;
+  document.documentElement.setAttribute('data-theme',r);
+  const sb=document.getElementById('sb');
+  if(sb)sb.textContent=BANNERS[r]||'';
+  document.querySelectorAll('.ts-b').forEach(b=>b.classList.remove('on'));
+  const M={dark:'🌙',light:'☀️',system:'⚙️',noel:'🎄',halloween:'🎃',paques:'🐣'};
+  document.querySelectorAll('.ts-b').forEach(b=>{if(b.textContent.trim()===M[t])b.classList.add('on');});
+}
+function setTheme(t){
+  fetch('/admin/save_settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({site_theme:t})}).catch(()=>{});
+  localStorage.setItem('bft',t);
+  applyTheme(t);
+}
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(localStorage.getItem('bft')==='system')applyTheme('system');});
+applyTheme('{{ site_theme }}');
+function toast(txt){const t=document.getElementById('toast');t.textContent=txt;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+{% block script %}{% endblock %}
+</body>
+</html>
