@@ -13,9 +13,9 @@ DB_PATH    = os.path.join(BASE_DIR, "database.db")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(LOGO_DIR, exist_ok=True)
 
-ALLOWED_MODELS = {"rbxm", "rbxmx"}
+ALLOWED_MODELS = {"rbxm"}
 ALLOWED_IMAGES = {"png", "jpg", "jpeg", "gif", "webp", "svg"}
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin1234")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "BF.2026")
 
 # ── DB ───────────────────────────────────────────────────────────────────────
 def get_db():
